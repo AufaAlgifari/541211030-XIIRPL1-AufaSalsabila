@@ -5,6 +5,12 @@ module.exports = {
     try {
       const users = await User.find();
       if (users.length > 0) {
+        res.status(200).json({
+          status: true,
+          data: users,
+          method: req.method,
+          url: req.url,
+        });
       } else {
         res.json({
           status: false,
@@ -15,15 +21,19 @@ module.exports = {
       res.status(400).json({ sucess: false });
     }
   },
-  store: (req, res) => {
-    users.push(req.body);
-    res.json({
-      status: true,
-      data: users,
-      method: req.method,
-      url: req.url,
-      massage: "Data Berhasil Ditambahkan",
-    });
+  store: async (req, res) => {
+    try {
+      const user = await User.create(req.body);
+      res.status(200).json({
+        status: true,
+        data: user,
+        method: req.method,
+        url: req.url,
+        massage: "Data Berhasil Ditambahkan",
+      });
+    } catch (error) {
+      res.status(400).json({ success: false });
+    }
   },
   update: (req, res) => {
     const id = req.params.id;
